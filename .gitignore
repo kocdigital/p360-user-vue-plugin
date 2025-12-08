@@ -22,7 +22,6 @@ pnpm-debug.log*
 *.sw?
 
 package-lock.json
-yarn.lock
 bun.lockb
 bun.lock
 pnpm-lock.yaml
