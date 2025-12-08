@@ -1,0 +1,1 @@
+export default interface IUserProperties extends Record<string, string | undefined> {};
