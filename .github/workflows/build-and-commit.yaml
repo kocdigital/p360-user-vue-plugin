@@ -1,9 +1,9 @@
 name: Build and Commit on Release Tag
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  release:
+    types:
+      - released
   workflow_dispatch:
 
 permissions:
