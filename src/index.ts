@@ -4,7 +4,7 @@ import {revokeSf} from '@kocdigital/sf-interface';
 import config from '@/config';
 import identityServerUsersApi from '@/services/identityServerUsersApi';
 
-import type {VueConstructor} from 'vue';
+import type {VueConstructor, PluginObject} from 'vue';
 import {
     JwtUser as DefaultJwtUser,
     User as DefaultUser,
@@ -52,7 +52,7 @@ export default {
     /**
      * Vue plugin entry point
      */
-    install(Vue: VueConstructor, options: UserVuePluginOptions = {}): void {
+    install(Vue, options = {}): void {
         // #region Storage options
         this._storage = options?.storage ?? localStorage;
         this._storageKey = options?.storageKey ?? config.STORAGE.USER_KEY;
@@ -208,4 +208,4 @@ export default {
             _fetchUser();
         }
     }
-};
+} as PluginObject<UserVuePluginOptions>;
