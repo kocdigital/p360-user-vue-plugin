@@ -4,7 +4,8 @@ import {revokeSf} from '@kocdigital/sf-interface';
 import config from '@/config';
 import identityServerUsersApi from '@/services/identityServerUsersApi';
 
-import type {VueConstructor, PluginObject} from 'vue';
+import type {PluginObject} from 'vue';
+import type {Vue} from 'vue/types/vue';
 import {
     JwtUser as DefaultJwtUser,
     User as DefaultUser,
@@ -13,7 +14,13 @@ import {
     type IUser
 } from '@/models/user';
 
-import type {UserVuePluginOptions} from '@/types/options';
+export interface UserVuePluginOptions {
+    storage?: Storage;
+    storageKey?: string;
+    CustomUser?: typeof DefaultUser;
+    CustomJwtUser?: typeof DefaultJwtUser;
+    fetchUserById?: <U extends IUser = IUser>(id: string) => Promise<U>;
+}
 
 const sfCore = revokeSf();
 
@@ -209,3 +216,18 @@ export default {
         }
     }
 } as PluginObject<UserVuePluginOptions>;
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $jwtUser: Readonly<InstanceType<typeof DefaultJwtUser>>;
+    $user: Readonly<InstanceType<typeof DefaultUser>>;
+    $userLoaded: Promise<boolean>;
+  }
+}
+
+declare module 'vue/types/options' {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+    interface ComponentOptions<V extends Vue> {
+        user?: PluginObject<UserVuePluginOptions>;
+    }
+}

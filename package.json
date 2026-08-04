@@ -29,19 +29,25 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./types": {
-      "types": "./dist/types.d.ts"
-    },
     "./models": {
       "types": "./dist/models.d.ts",
       "import": "./dist/models.js",
       "require": "./dist/models.cjs"
-    },
-    "./*": "./*"
+    }
   },
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "dist/index.d.ts"
+      ],
+      "./models": [
+        "dist/models.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
