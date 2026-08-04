@@ -1,7 +1,7 @@
 import type IUser from './IUser';
 import type IUserProperties from './IUserProperties';
 
-export default class User implements IUser {
+export default class User<P extends IUserProperties = IUserProperties> implements IUser<P> {
     Id: string;
     Email: string;
     UserName: string;
@@ -9,9 +9,9 @@ export default class User implements IUser {
     LastName: string;
     PhoneNumber: string;
     OrganizationId: string;
-    Properties: Partial<IUserProperties>;
+    Properties: Partial<P>;
 
-    constructor(detail: Partial<IUser> = {}) {
+    constructor(detail: Partial<IUser<P>> = {}) {
         this.Id = detail?.Id || '';
         this.Email = detail?.Email || '';
         this.UserName = detail?.UserName || '';
