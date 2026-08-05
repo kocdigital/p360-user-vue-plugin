@@ -32,12 +32,20 @@ jobs:
           git commit -m "ci: build artifacts for release" || echo "No changes to commit"
           git push origin HEAD:main
 
-      - name: Publish the library to GitHub Packages
+      - name: Setup authentication for NPM and GitHub Packages registries
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to GitHub Packages
         run: yarn publish --registry https://npm.pkg.github.com --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish the library to npm
+      - name: Publish to NPM
         run: yarn publish --registry https://registry.npmjs.org --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
