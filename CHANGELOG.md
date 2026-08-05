@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Compatibility bridge files at package root (`models.js`, `models.cjs`, `models.d.ts`) to support `/models` subpath imports in legacy resolver setups.
+
+### Changed
+
+- `IUser` and `User` models now support generic property typing (`P extends IUserProperties`) for stronger type safety with custom user schemas.
+- Plugin option types were consolidated under `src/types/config.ts` and re-exported from the main entrypoint.
+- Promise shim declaration was moved from `src/types/shims-polyfills.d.ts` to `src/shims-polyfills.d.ts`.
+- CI workflow dependencies were updated to `v7` (GitHub Actions `actions/checkout` and `actions/setup-node`).
+
+### Fixed
+
+- `/models` import resolution and typings were corrected for consumers using older TypeScript/Webpack module resolution behavior.
+
 ## [0.0.1] - 2025-12-08
 
 ### Added
