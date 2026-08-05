@@ -31,7 +31,7 @@ on:
         description: "Generate release notes for the GitHub Release"
         required: false
         type: boolean
-        default: true
+        default: false
 
 env:
   HUSKY: 0
