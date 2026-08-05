@@ -86,7 +86,7 @@ declare class JwtUser implements Omit<IJwtUser, 'organization-id' | 'user-type' 
 interface IUserProperties extends Record<string, string | undefined> {
 }
 
-interface IUser {
+interface IUser<P extends IUserProperties = IUserProperties> {
     Id: string;
     Email: string;
     UserName: string;
@@ -94,10 +94,10 @@ interface IUser {
     LastName: string;
     PhoneNumber: string;
     OrganizationId: string;
-    Properties: Partial<IUserProperties>;
+    Properties: Partial<P>;
 }
 
-declare class User implements IUser {
+declare class User<P extends IUserProperties = IUserProperties> implements IUser<P> {
     Id: string;
     Email: string;
     UserName: string;
@@ -105,8 +105,8 @@ declare class User implements IUser {
     LastName: string;
     PhoneNumber: string;
     OrganizationId: string;
-    Properties: Partial<IUserProperties>;
-    constructor(detail?: Partial<IUser>);
+    Properties: Partial<P>;
+    constructor(detail?: Partial<IUser<P>>);
     /**
      * The user full name
      */
@@ -116,4 +116,4 @@ declare class User implements IUser {
     [Symbol.toStringTag](): string;
 }
 
-export { IUser as I, JwtUser as J, User as U, IJwtUser as a, IUserProperties as b };
+export { IUser as I, JwtUser as J, User as U, IUserProperties as a, IJwtUser as b };

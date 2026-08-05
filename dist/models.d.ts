@@ -1,4 +1,4 @@
-export { a as IJwtUser, I as IUser, b as IUserProperties, J as JwtUser, U as User } from './User-7a583b28.js';
+export { b as IJwtUser, I as IUser, a as IUserProperties, J as JwtUser, U as User } from './User-2d059d16.js';
 
 declare class UserProperties<T extends Record<string, string>> {
     protected _properties: Map<keyof T, string>;

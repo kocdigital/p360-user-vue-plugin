@@ -1,22 +1,23 @@
-import { VueConstructor } from 'vue';
-import { I as IUser, U as User, J as JwtUser, a as IJwtUser } from './User-7a583b28.js';
-import { U as UserVuePluginOptions } from './options-0d6dc214.js';
+import { U as User, J as JwtUser, I as IUser, a as IUserProperties } from './User-2d059d16.js';
+import { PluginObject } from 'vue';
 
-declare function _defaultFetchUserById(id: string): Promise<IUser>;
-declare const _default: {
-    _storage: Storage;
-    _storageKey: string;
-    _User: typeof User;
-    _JwtUser: typeof JwtUser;
-    _jwtUser: JwtUser | null;
-    _tokenUser: User | null;
-    _persistedUser: User | null;
-    createUser(data: Partial<IUser>): InstanceType<typeof this$1._User>;
-    createJwtUser(data: Partial<IJwtUser>): InstanceType<typeof this$1._JwtUser>;
-    /**
-     * Vue plugin entry point
-     */
-    install(Vue: VueConstructor, options?: UserVuePluginOptions): void;
-};
+interface UserVuePluginOptions {
+    storage?: Storage;
+    storageKey?: string;
+    CustomUser?: typeof User;
+    CustomJwtUser?: typeof JwtUser;
+    fetchUserById?: <U extends IUser = IUser>(id: string) => Promise<U>;
+}
 
-export { _defaultFetchUserById, _default as default };
+declare module 'vue/types/vue' {
+    interface Vue {
+        $jwtUser: Readonly<InstanceType<typeof JwtUser>>;
+        $user: Readonly<InstanceType<typeof User>>;
+        $userLoaded: Promise<boolean>;
+    }
+}
+
+declare function _defaultFetchUserById(id: string): Promise<IUser<IUserProperties>>;
+declare const _default: PluginObject<UserVuePluginOptions>;
+
+export { UserVuePluginOptions, _defaultFetchUserById, _default as default };
