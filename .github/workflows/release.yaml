@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  release:
+    types: released
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 16
+
+      - name: Install CI dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build the library
+        run: yarn build
+
+      - name: Commit built assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/
+          git commit -m "ci: build artifacts for release" || echo "No changes to commit"
+          git push origin HEAD:main
+
+      - name: Publish the library to GitHub Packages
+        run: yarn publish --registry https://npm.pkg.github.com --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish the library to npm
+        run: yarn publish --registry https://registry.npmjs.org --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
