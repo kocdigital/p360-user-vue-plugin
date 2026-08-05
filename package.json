@@ -49,7 +49,10 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "models.js",
+    "models.cjs",
+    "models.d.ts"
   ],
   "scripts": {
     "build": "tsup",
