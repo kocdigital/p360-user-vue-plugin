@@ -97,7 +97,7 @@ jobs:
 
           if [ "${{ inputs.skip_tag }}" != "true" ]; then
             TAG="v${{ steps.bump_version.outputs.new_version }}"
-            git rev-parse "$TAG" >/dev/null 2>&1 || git tag -s "$TAG" -m "$TAG"
+            git rev-parse "$TAG" >/dev/null 2>&1 || git tag "$TAG"
           fi
 
           if [ "${{ inputs.skip_push }}" != "true" ]; then
