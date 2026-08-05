@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-08-05
+
 ### Added
 
 - Compatibility bridge files at package root (`models.js`, `models.cjs`, `models.d.ts`) to support `/models` subpath imports in legacy resolver setups.
@@ -31,7 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable plugin options for `CustomUser`, `CustomJwtUser`, `fetchUserById`, `storage`, and `storageKey`.
 - Published typed subpath exports for models (`@kocdigital/p360-user-vue-plugin/models`) and type declarations.
 
-[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.1...HEAD
+[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/olivierlacan/keep-a-changelog/releases/tag/v0.0.1
 [SemVer]: https://semver.org
 [@asimtahir-karakus-kd]: https://github.com/asimtahir-karakus-kd
