@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "keep-a-changelog": {
+      "source": "morzecrew/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/keep-a-changelog/SKILL.md",
+      "computedHash": "4d1c6814cf52ee1e97237a9bedd48cde4d31d9c10f638869a66421c5c1854182"
+    }
+  }
+}
