@@ -1,51 +1,170 @@
 name: Release
 
 on:
-  release:
-    types: released
   workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Version type to bump"
+        required: true
+        type: choice
+        default: "patch"
+        options:
+          - patch
+          - minor
+          - major
+      skip_tag:
+        description: "Skip adding git tag to the version bump commit"
+        required: false
+        type: boolean
+        default: false
+      skip_commit:
+        description: "Skip committing the version bump"
+        required: false
+        type: boolean
+        default: false
+      skip_push:
+        description: "Skip pushing any commits or tags created after the version bump"
+        required: false
+        type: boolean
+        default: false
+      generate_release_notes:
+        description: "Generate release notes for the GitHub Release"
+        required: false
+        type: boolean
+        default: true
+
+env:
+  HUSKY: 0
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
 
 jobs:
   build-and-release:
     name: Build and Release
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: write
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install CI dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Build the library
-        run: yarn build
+        run: npm run build
 
-      - name: Commit built assets
+      - name: Configure Git Identity
+        if: ${{ !inputs.skip_commit }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push built artifacts
+        if: ${{ !inputs.skip_push }}
+        run: |
           git add dist/
           git commit -m "ci: build artifacts for release" || echo "No changes to commit"
-          git push origin HEAD:main
+          git push origin HEAD:${{ github.ref_name }}
 
-      - name: Setup authentication for NPM and GitHub Packages registries
+      - name: Generate SBOM
+        run: npm sbom --omit=dev --sbom-format spdx > sbom.spdx.json
+
+      - name: GitHub Attestation
+        uses: actions/attest@v4
+        with:
+          subject-path: "${{ github.workspace }}"
+          sbom-path: "${{ github.workspace }}/sbom.spdx.json"
+
+      - name: Bump Version
+        id: bump_version
+        run: |
+          echo "old_version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+          npm version "${{ inputs.version_type }}" --no-git-tag-version
+          echo "new_version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Finalize Version Bump
+        run: |
+          if [ "${{ inputs.skip_commit }}" != "true" ]; then
+            git add package.json package-lock.json
+            git commit -m "ci: bump version to `${{ steps.bump_version.outputs.new_version }}`" || echo "No version files to commit"
+          fi
+
+          if [ "${{ inputs.skip_tag }}" != "true" ]; then
+            TAG="v${{ steps.bump_version.outputs.new_version }}"
+            git rev-parse "$TAG" >/dev/null 2>&1 || git tag -s "$TAG" -m "$TAG"
+          fi
+
+          if [ "${{ inputs.skip_push }}" != "true" ]; then
+            git push origin HEAD:${{ github.ref_name }}
+
+            if [ "${{ inputs.skip_tag }}" != "true" ]; then
+              git push origin "v${{ steps.bump_version.outputs.new_version }}"
+            fi
+          fi
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PREV_VERSION="${{ steps.bump_version.outputs.old_version }}"
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          TAG="v${NEW_VERSION}"
+          REPO_URL="https://github.com/${{ github.repository }}"
+
+          awk -v ver="$NEW_VERSION" '
+            index($0, "## [" ver "]") == 1 { in_section = 1; next }
+            in_section && index($0, "## [") == 1 { in_section = 0 }
+            in_section { lines[++n] = $0 }
+            END {
+              for (i = 1; i <= n; i++) {
+                if (lines[i] !~ /^[[:space:]]*$/) {
+                  first = i
+                  break
+                }
+              }
+              for (i = n; i >= 1; i--) {
+                if (lines[i] !~ /^[[:space:]]*$/) {
+                  last = i
+                  break
+                }
+              }
+              if (first && last) {
+                for (i = first; i <= last; i++) {
+                  print lines[i]
+                }
+              }
+            }
+          ' CHANGELOG.md > release-notes.md
+
+          if [ -n "$(tr -d '[:space:]' < release-notes.md)" ]; then
+            if [ -n "$PREV_VERSION" ]; then
+              printf '\n**Full Changelog**: %s/compare/v%s...v%s\n' "$REPO_URL" "$PREV_VERSION" "$NEW_VERSION" >> release-notes.md
+            fi
+            release_args=(--notes-file release-notes.md)
+          elif [ "${{ inputs.generate_release_notes }}" = "true" ]; then
+            rm -f release-notes.md
+            release_args=(--generate-notes)
+          else
+            rm -f release-notes.md
+            release_args=(--notes "$TAG")
+          fi
+
+          gh release create "$TAG" --verify-tag "${release_args[@]}"
+
+      - name: Setup authentication for GitHub Packages registry
         run: |
           echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish to GitHub Packages
-        run: yarn publish --registry https://npm.pkg.github.com --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --registry https://npm.pkg.github.com --access public --tag latest --provenance
 
       - name: Publish to NPM
-        run: yarn publish --registry https://registry.npmjs.org --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --registry https://registry.npmjs.org --access public --tag latest --provenance
