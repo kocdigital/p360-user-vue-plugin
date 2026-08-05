@@ -7,7 +7,7 @@ This Vue plugin facilitates streamlined access to user data via `$jwtUser` and `
 ### Installation
 
 ```bash
-npm i @kocdigital/p360-user-vue-plugin
+npm install @kocdigital/p360-user-vue-plugin
 ```
 
 ```bash
@@ -21,7 +21,7 @@ yarn add git+https://github.com/kocdigital/p360-user-vue-plugin.git
 ```
 
 ```bash
-npm i git+https://github.com/kocdigital/p360-user-vue-plugin.git
+npm install git+https://github.com/kocdigital/p360-user-vue-plugin.git
 ```
 
 ### Usage
@@ -102,9 +102,8 @@ If you would like to contribute to this project, please fork the repository and 
 
 ### Prerequisites
 
-- Install [Node.js 16.x](https://nodejs.org/dist/latest-v16.x/)
-- Install [Yarn](https://yarnpkg.com/) if you haven't already.
-  - Enable `yarn` with `corepack enable` if you're using Node.js 16.10 or later.
+- Install [Node.js 18.x](https://nodejs.org/dist/latest-v18.x/)
+- Install [npm](https://www.npmjs.com/) (included with Node.js).
 
 ### Setup
 
@@ -118,7 +117,7 @@ If you would like to contribute to this project, please fork the repository and 
 2. Install the dependencies:
 
    ```bash
-   yarn install
+   npm install
    ```
 
 ### Building the Plugin
@@ -128,25 +127,25 @@ To build the plugin, you can use the following commands:
 - **One-time build:**
 
    ```bash
-   yarn build
+   npm run build
    ```
 
 - **Continuous build:**
 
   ```bash
-  yarn dev
+  npm run dev
   ```
 
-The `yarn build` command will create a production-ready build of the plugin, while `yarn dev` will run the build in watch mode, rebuilding automatically on changes.
+The `npm run build` command will create a production-ready build of the plugin, while `npm run dev` will run the build in watch mode, rebuilding automatically on changes.
 
-### Linking with Yarn
+### Linking with npm
 
-To link this vue plugin with your main application using Yarn, follow these steps:
+To link this vue plugin with your main application using npm, follow these steps:
 
 1. In the root directory of the plugin, run:
 
    ```bash
-   yarn link
+   npm link
    ```
 
 2. Navigate to your main application directory:
@@ -158,7 +157,7 @@ To link this vue plugin with your main application using Yarn, follow these step
 3. Link the plugin to your main application:
 
    ```bash
-   yarn link "@kocdigital/p360-user-vue-plugin"
+   npm link "@kocdigital/p360-user-vue-plugin"
    ```
 
 4. Now you can develop features or fix bugs in the plugin and see the changes reflected in your main application without needing to publish the plugin to npm.
