@@ -92,7 +92,7 @@ jobs:
         run: |
           if [ "${{ inputs.skip_commit }}" != "true" ]; then
             git add package.json package-lock.json
-            git commit -m "ci: bump version to `${{ steps.bump_version.outputs.new_version }}`" || echo "No version files to commit"
+            git commit -m "ci: bump version to \`${{ steps.bump_version.outputs.new_version }}\`" || echo "No version files to commit"
           fi
 
           if [ "${{ inputs.skip_tag }}" != "true" ]; then
