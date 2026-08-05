@@ -4,7 +4,101 @@
 
 This Vue plugin facilitates streamlined access to user data via `$jwtUser` and `$user` global variables, fetches user data once and clears the user cache upon logout.
 
-## Getting Started
+### Installation
+
+```bash
+npm i @kocdigital/p360-user-vue-plugin
+```
+
+```bash
+yarn add @kocdigital/p360-user-vue-plugin
+```
+
+or
+
+```bash
+yarn add git+https://github.com/kocdigital/p360-user-vue-plugin.git
+```
+
+```bash
+npm i git+https://github.com/kocdigital/p360-user-vue-plugin.git
+```
+
+### Usage
+
+After installation, you can import the plugin in your Vue application as follows:
+
+   ```typescript
+   import Vue from 'vue';
+   import user from '@kocdigital/p360-user-vue-plugin';
+ 
+   Vue.use(user);
+   ```
+
+Access user models to customize user or jwt user data:
+
+   ```typescript
+   import Vue from 'vue';
+   import user from '@kocdigital/p360-user-vue-plugin';
+   import {User as DefaultUser} from '@kocdigital/p360-user-vue-plugin/models';
+ 
+   export class MyCustomUser extends DefaultUser {
+     // Your customizations here
+   }
+ 
+   Vue.use(user, {
+     CustomUser: MyCustomUser
+   });
+   ```
+
+   ```typescript
+   import Vue from 'vue';
+   import user from '@kocdigital/p360-user-vue-plugin';
+   import {JwtUser as DefaultJwtUser} from '@kocdigital/p360-user-vue-plugin/models';
+ 
+   export class MyCustomJwtUser extends DefaultJwtUser {
+     // Your customizations here
+   }
+ 
+   Vue.use(user, {
+     CustomJwtUser: MyCustomJwtUser
+   });
+   ```
+
+Customize the user fetching logic by providing your own `fetchUserById` function:
+
+   ```typescript
+   import Vue from 'vue';
+   import user from '@kocdigital/p360-user-vue-plugin';
+ 
+   import type {IUser} from '@kocdigital/p360-user-vue-plugin/models';
+ 
+   Vue.use(user, {
+     fetchUserById: async (userId): Promise<IUser> => {
+       // Your custom fetch logic here
+       const response = await fetch(`/api/users/${userId}`);
+       const data: IUser = await response.json();
+ 
+       return data; // Must return `IUser`, otherwise throw type error
+     }
+   });
+   ```
+
+Customize user cache target by providing storage options:
+
+```typescript
+   import Vue from 'vue';
+   import user from '@kocdigital/p360-user-vue-plugin';
+ 
+   Vue.use(user, {
+     storage: sessionStorage, // default is `localStorage`
+     storageKey: 'my-custom-user-cache' // default is "x-user"
+   });
+```
+
+## Contributing
+
+If you would like to contribute to this project, please fork the repository and submit a pull request with your changes.
 
 ### Prerequisites
 
@@ -12,7 +106,7 @@ This Vue plugin facilitates streamlined access to user data via `$jwtUser` and `
 - Install [Yarn](https://yarnpkg.com/) if you haven't already.
   - Enable `yarn` with `corepack enable` if you're using Node.js 16.10 or later.
 
-### Installation
+### Setup
 
 1. Clone the repository:
 
@@ -67,80 +161,4 @@ To link this vue plugin with your main application using Yarn, follow these step
    yarn link "@kocdigital/p360-user-vue-plugin"
    ```
 
-4. Now you can import and use the vue plugin in your main application as needed.
-
-### Usage
-
-After linking, you can import the plugin in your Vue application as follows:
-
-   ```typescript
-   import Vue from 'vue';
-   import user from '@kocdigital/p360-user-vue-plugin';
- 
-   Vue.use(user);
-   ```
-
-Access user models to customize user or jwt user data:
-
-   ```typescript
-   import Vue from 'vue';
-   import user from '@kocdigital/p360-user-vue-plugin';
-   import {User} from '@kocdigital/p360-user-vue-plugin/models';
- 
-   export class MyCustomUser extends User {
-     // Your customizations here
-   }
- 
-   Vue.use(user, {
-     CustomUser: MyCustomUser
-   });
-   ```
-
-   ```typescript
-   import Vue from 'vue';
-   import user from '@kocdigital/p360-user-vue-plugin';
-   import {JwtUser} from '@kocdigital/p360-user-vue-plugin/models';
- 
-   export class MyCustomJwtUser extends JwtUser {
-     // Your customizations here
-   }
- 
-   Vue.use(user, {
-     CustomJwtUser: MyCustomJwtUser
-   });
-   ```
-
-Customize the user fetching logic by providing your own `fetchUserById` function:
-
-   ```typescript
-   import Vue from 'vue';
-   import user from '@kocdigital/p360-user-vue-plugin';
- 
-   import type {IUser} from '@kocdigital/p360-user-vue-plugin/models';
- 
-   Vue.use(user, {
-     fetchUserById: async (userId): Promise<IUser> => {
-       // Your custom fetch logic here
-       const response = await fetch(`/api/users/${userId}`);
-       const data: IUser = await response.json();
- 
-       return data; // Must return `IUser`, otherwise throw type error
-     }
-   });
-   ```
-
-Customize user cache target by providing storage options:
-
-```typescript
-   import Vue from 'vue';
-   import user from '@kocdigital/p360-user-vue-plugin';
- 
-   Vue.use(user, {
-     storage: sessionStorage, // default is `localStorage`
-     storageKey: 'my-custom-user-cache' // default is "x-user"
-   });
-```
-
-## Contributing
-
-If you would like to contribute to this project, please fork the repository and submit a pull request with your changes.
+4. Now you can develop features or fix bugs in the plugin and see the changes reflected in your main application without needing to publish the plugin to npm.
