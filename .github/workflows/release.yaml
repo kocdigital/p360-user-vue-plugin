@@ -78,7 +78,7 @@ jobs:
       - name: GitHub Attestation
         uses: actions/attest@v4
         with:
-          subject-path: "${{ github.workspace }}"
+          subject-path: "${{ github.workspace }}/dist"
           sbom-path: "${{ github.workspace }}/sbom.spdx.json"
 
       - name: Bump Version
