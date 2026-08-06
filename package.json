@@ -4,13 +4,13 @@
   "license": "UNLICENSED",
   "type": "module",
   "description": "Koç Digital Platform360 User Vue Plugin",
-  "homepage": "https://github.com/@kocdigital/p360-user-vue-plugin#readme",
+  "homepage": "https://github.com/kocdigital/p360-user-vue-plugin#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/@kocdigital/p360-user-vue-plugin.git"
+    "url": "git+https://github.com/kocdigital/p360-user-vue-plugin.git"
   },
   "bugs": {
-    "url": "https://github.com/@kocdigital/p360-user-vue-plugin/issues"
+    "url": "https://github.com/kocdigital/p360-user-vue-plugin/issues"
   },
   "keywords": [
     "kocdigital",
