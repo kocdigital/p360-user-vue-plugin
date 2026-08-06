@@ -1,6 +1,6 @@
 {
   "name": "@kocdigital/p360-user-vue-plugin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "UNLICENSED",
   "type": "module",
   "description": "Koç Digital Platform360 User Vue Plugin",
